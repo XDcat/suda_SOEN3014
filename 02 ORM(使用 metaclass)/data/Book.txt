@@ -1,5 +1,0 @@
-3,《Learning with Kernels》,9.7,30, Bernhard Schlkopf / Alexander J. Smola ,  The MIT Press / 2001-12-15 / USD 79.00
-4,《Pattern Recognition And Machine Learning》,9.6,679, Christopher M. Bishop ,  Springer / 2007-10-1 / USD 94.95
-5,《这是一个被改过的 book》,9.6,10000000000000000000000000000000000000, Stephen Boyd / Lieven Vandenberghe ,  Cambridge University Press / 2004-3-8 / USD 90.00
-1,《Multiple View Geometry in Computer Vision》,9.8,56, Richard Hartley / Andrew Zisserman ,  Cambridge University Press / 2004-4-19 / USD 122.00
-2,《Graphical Models Exponential Families and Variational Inference》,9.7,20, Martin J Wainwright / Michael I Jordan ,  Now Publishers Inc / December 16 2008 / USD 125.00

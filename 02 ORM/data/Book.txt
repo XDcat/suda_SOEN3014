@@ -1,0 +1,24 @@
+1349,《这是一个被改过的 book》,0,10000000000000000000000000000000000000, T.J. Hastie / R.J. Tibshirani / Chapman and Hall, CRC / 1990-6-1 / USD 125.95
+2,《Graphical Models Exponential Families and Variational Inference》,9.7,20, Martin J Wainwright / Michael I Jordan ,  Now Publishers Inc / December 16 2008 / USD 125.00
+111,《数据之魅》,7.9,51, （美）Philipp K. Janert / 黄权 ,  清华大学出版社 / 2012-7 / 89.00元
+214,《信用风险评分卡研究》,0,0, 马杜姆.雷法特 / 王松奇 / 林智乾 ,  社会科学文献出版社 / 2013-7 / 58.00
+153,《Recommender Systems》,7.6,17, Dietmar Jannach / Markus Zanker / Alexander Felfernig / Gerhard Friedrich ,  Cambridge University Press / 2010-9-30 / USD 65.00
+159,《这是一个被改过的 book》,7.5,10000000000000000000000000000000000000, Haralambos Marmanis / Dmitry Babenko / 阿稳 / 陈钢 ,  电子工业出版社 / 2011-11 / 65.00元
+60,《利用Python进行数据分析》,8.6,70, Wes McKinney / 唐学韬 ,  机械工业出版社 / 2013-11-18 / 89.00
+93,《Doing Data Science》,8.1,21, Rachel Schutt / Cathy O'Neil ,  O'Reilly Media / 2013-10-30 / USD 39.99
+335,《Understanding Computational Bayesian Statistics》,0,0, , Bolstad William M. / 2009-12 / 918.00元
+355,《Data Analytics》,0,0, Runkler Thomas ,  Springer Fachmedien Wiesbaden / 2012-9 / $ 45.14
+262,《这是一个被改过的 book》,0,10000000000000000000000000000000000000, , 陆旭 / 2008-12 / 20.00元
+182,《大嘴巴漫谈数据挖掘（全彩）》,7.3,28, 易向军 ,  电子工业出版社 / 2014-4 / 69.00元
+102,《神经网络原理》,8,46, Simon Haykin / 叶世伟 / 史忠植 ,  机械工业出版社 / 2004-1 / 69.00元
+319,《Nearest-Neighbor Methods in Learning and Vision》,0,0, Shakhnarovich Gregory (EDT)/ Darrell Trevor (EDT)/ Indyk Piotr (EDT) ,  Mit Pr / 2006-3 / $ 50.85
+49,《Data-intensive Text Processing With Mapreduce》,8.9,49, Jimmy Lin / Chris Dyer ,  Morgan and Claypool Publishers / 2010-4-30 / USD 40.00
+243,《这是一个被改过的 book》,0,10000000000000000000000000000000000000, Efron Bradley ,  Cambridge University Press / 2010-9 / 646.00元
+345,《模式识别中的核方法及其应用》,0,0, , 2010-2 / 28.00元
+253,《Probabilistic Reasoning in Intelligent Systems》,0,0, Judea Pearl ,  Morgan Kaufmann / 1988-09-15 / USD 106.00
+195,《走进搜索引擎》,6.9,95, , 梁斌 / 2007-1 / 49.80元
+199,《New Internet》,6.6,27, 谭磊 ,  电子工业出版社 / 2013-3 / 69.00元
+238,《这是一个被改过的 book》,0,10000000000000000000000000000000000000, Larry Wasserman ,  Springer / 2010-12-2 / USD 99.00
+96,《模式分析的核方法》,8.1,25, 肖-泰勒 / 克瑞斯天尼 ,  机械工业出版社 / 2006-1 / 48.0
+68,《机器学习(英文版)》,8.5,20, Tom M.Mitchell / 曾华军 ,  机械工业出版社 / 2003-03 / 58.0
+116,《Statistical Models》,7.9,10, David A. Freedman ,  Cambridge University Press / 2009-04-27 / USD 40.00

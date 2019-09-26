@@ -5,9 +5,10 @@ __mtime__ = 2019/9/22
 __project__ = 工业实践课程
 Fix the Problem, Not the Blame.
 '''
-import os
-import re
 
+import os
+import random
+import re
 import openpyxl
 
 
@@ -107,7 +108,7 @@ class Book():
 
     def print_file(self):
         with open(self.file_path, "r", encoding="utf-8") as f:
-            print("==>文件中的结果（因为原文件有数据，所以条数可能不一致）")
+            print("\n==>文件中的结果（因为原文件有数据，所以条数可能不一致）")
             for i in f.readlines():
                 print("\t", i, end="")
 
@@ -146,13 +147,15 @@ def get_many_books():
 
 if __name__ == '__main__':
     sample_books = get_many_books()
-    sample_books[0].delete_all()
-    print("====== 1. 得到5本书，并保存 =======")
-    # random_books = random.sample(sample_books, 5)
-    random_books = sample_books[:5]
+    # sample_books[0].delete_all()
+    print("====== 1. 从 excel 中随机找到5本书的数据，将他们保存到文件中 =======")
+    random_books = random.sample(sample_books, 5)
+    # random_books = sample_books[:5]
     for i in random_books:
         i.save()
     random_books[0].print_file()  # 展示结果
+    print()
+    print()
     print()
 
     print("====== 2. 删除其中前 2 本 =======")
@@ -160,15 +163,19 @@ if __name__ == '__main__':
         i.delete()
     random_books[0].print_file()  # 展示结果
     print()
+    print()
+    print()
 
     print("====== 3. 重复插入刚才的 5 本 =======")
     for i in random_books:
         i.save()
     random_books[0].print_file()  # 展示结果
     print()
+    print()
+    print()
 
     print("====== 4. 更新 id = %s 的 book =======" % random_books[-1].book_id)
-    book = random_books[-1]
+    book = random_books[-2]
     print("改前：%s" % book)
     book.book_name = "《这是一个被改过的 book》"
     book.book_count_mark_people = 10000000000000000000000000000000000000
@@ -177,15 +184,25 @@ if __name__ == '__main__':
 
     random_books[0].print_file()  # 展示结果
     print()
+    print()
+    print()
 
     print("====== 5. 查询 book =======")
-    print("查询已经存在的书籍 id = 4")
-    print(Book().query(4))
+    print("查询已经存在的书籍 id = %s" % random_books[-1].book_id)
+    print(Book().query(random_books[-1].book_id))
     print("查询没有的数据 id = 1000")
     print(Book().query(100))
+    print()
+    print()
+    print()
 
     print("====== 6. 查询 book，并当作对象取值 =======")
-    print("查询已经存在的书籍 id = 4")
-    book = Book().query(4)
-    print("book_id:", book.book_id)
-    print("book_name:", book.book_name)
+    print("查询已经存在的书籍 id = %s" % random_books[-1].book_id)
+    book = Book().query(random_books[-1].book_id)
+
+    print("book_id: ", book.book_id)
+    print("book_name: ", book.book_name)
+    print("book_mark: ", book.book_mark)
+    print("book_count_mark_people: ", book.book_count_mark_people)
+    print("book_author: ", book.book_author)
+    print("book_publish: ", book.book_publish)
