@@ -57,7 +57,7 @@ class ShowGridPanel(wx.Panel):
         wx.Panel.__init__(self, parent, -1)
 
         self.grid = wx.grid.Grid(self, -1)
-
+        self.grid.CreateGrid(5, 10)
         # 添加布局方式
         vbox = wx.BoxSizer(wx.VERTICAL)
         vbox.Add(self.grid, -1, flag=wx.EXPAND)
@@ -74,9 +74,9 @@ class ShowGridPanel(wx.Panel):
             cols = c.execute("pragma table_info(%s);" % table).fetchall()
             cols = [col[1] for col in cols]
             # 查询数据
-            tuples = c.execute("select * from %s limit 100" % table).fetchall()
-
-            print(len(tuples), len(cols))
+            # TODO: 分页展示数据
+            tuples = c.execute("select * from %s" % table).fetchmany(100)
+            # TODO: 解决溢出问题
             # 绘制图表
             self.grid.ForceRefresh()
             grid_table = DBTable(path, table)
@@ -84,7 +84,7 @@ class ShowGridPanel(wx.Panel):
             # 绘制列名
             for index, col in enumerate(cols):
                 self.grid.SetColLabelValue(index, col)
-
+            self.grid.AutoSize()
         finally:
             pass
 
