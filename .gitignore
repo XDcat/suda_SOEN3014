@@ -1,0 +1,21 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Example user template template
+### Example user template
+# 测试文件
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+.gitignore
+.idea/deployment.xml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+".idea/\345\267\245\344\270\232\345\256\236\350\267\265\350\257\276\347\250\213.iml"
+02 ORM/__pycache__/
+/中文最大分词/
+/03 wxpython/other/
+/02 ORM/other/
