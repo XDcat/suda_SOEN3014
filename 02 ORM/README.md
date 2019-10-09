@@ -19,7 +19,7 @@ python ./Book.py
         ```
      3. 结果展示
          ```
-       D:\CS\anaconda\envs\py3\python.exe "D:/Box/Pycharm_Project/工业实践课程/02 ORM/Book.py"
+        D:\CS\anaconda\envs\py3\python.exe "D:/Box/Pycharm_Project/工业实践课程/02 ORM/Book.py"
         ====== 1. 从 excel 中随机找到5本书的数据，将他们保存到文件中 =======
         保存：179,《Python计算机视觉编程》,7.3,10, [瑞典] Jan Erik Solem / 朱文涛 / 袁勇 ,  人民邮电出版社 / 2014-6-10 / 69.00
         保存：202,《图解机器学习》,0,0, 杉山将 / 许永伟 ,  人民邮电出版社 / 2015-4 / 49
