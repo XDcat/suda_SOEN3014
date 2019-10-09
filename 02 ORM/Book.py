@@ -11,7 +11,6 @@ import random
 import re
 import openpyxl
 
-
 class Book():
     """
     可以进行一下几个操作，在不进行下列操作时，仅是一个普通的类。
@@ -206,3 +205,5 @@ if __name__ == '__main__':
     print("book.book_count_mark_people: ", book.book_count_mark_people)
     print("book.book_author: ", book.book_author)
     print("book.book_publish: ", book.book_publish)
+    print("\n====== Enter 键退出 ======")
+    os.system("pause")
