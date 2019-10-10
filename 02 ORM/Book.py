@@ -1,189 +1,209 @@
 # -*- coding:utf-8 -*-
 '''
 __author__ = 'XD'
-__mtime__ = 2019/9/22
+__mtime__ = 2019/10/10
 __project__ = 工业实践课程
 Fix the Problem, Not the Blame.
 '''
-
+import configparser
 import os
-import random
 import re
+import uuid
+import logging
 
-import openpyxl
-
-
+# 设置 logging 格式
+# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG, format='%(module)s - fnc: %(funcName)s() - line: %(lineno)d - %(levelname)s - %(message)s')
 class Book():
-    """
-    可以进行一下几个操作，在不进行下列操作时，仅是一个普通的类。
-    1. 增：在文件中增加自己的信息
-        * 如果主键已经存在，则不能添加
-        * 通过直接创建对象的，如果没有加入 id ，可以自动生成 id
-    2. 删：删文件中删除自己的信息，如果提供 id 则默认删除选定 id 的
-    3. 查：返回新的 Book 类
-    4. 改：在文件中修改自己的信息，如果没有存在，增加记录
+    """所有 Book 的父类
+    不同的类保存在不同的文件中，文件的路径根据配置当前路径的配置文件。
     """
 
     def __init__(self):
-        pass
+        # 设置日志对象
+        self.id = uuid.uuid1()  # 生成唯一表示符
+        self.file_basepath = self.get_file_basepath()  # 文件保存的目录
+        self.file_path = "%s%s.txt" % (self.get_file_basepath(), self.__class__.__name__)
+        if not os.path.isfile(self.file_path):
+            open(self.file_path, "w", encoding="utf-8").close()  # 如果文件不存在则创建
+    def add(self):
+        """
+        增
+        1. 如果在文件中，则无法插入
+        2. 如果不在文件中，则插入
+        """
+        if self.is_in_file():
+            logging.info("插入对象失败：文件中已经存在此对象")
+            return
+
+        with open(self.file_path, "a", encoding="utf-8") as f:
+            f.write(self.__str__(True) + '\n')
+        logging.info("插入对象:%s" % self.__str__())
 
     def save(self):
-        if not self.query(self.book_id):  # 在文件中没有该类的主键时，才可以插入
-            if not self.book_id:
-                self.book_id = self.find_max_id() + 1
-            with open(self.file_path, "a+", encoding="utf-8") as f:
-                f.write(self.__str__())
-                f.write("\n")
-                print("保存：%s" % self)
+        """
+        改
+        1. 如果在文件中，则更新
+        2. 如果不在文件中，则提示无法更新
+        """
+        if self.is_in_file():
+            # 如果存在记录，更新
+            with open(self.file_path, encoding="utf-8") as f:
+                text = f.read()
+            with open(self.file_path, "w", encoding="utf-8") as f:
+                text = re.sub("%s,.*" % self.id, self.__str__(True), text)
+                f.write(text)
+            logging.info("更新 id = %s 的记录" % self.id)
         else:
-            print("=>错误：文件中已经存在主键 %s ，你可能需要更新操作" % self.book_id)
-
-    def delete(self, book_id=None):
-        if not book_id:
-            # 删除指定 id 的
-            book_id = self.book_id
-        print("删除：book_id = %s" % self.query(book_id))
-
-        with open(self.file_path, "r+", encoding="utf-8") as f:
-            text = f.read()
-        with open(self.file_path, "w+", encoding="utf-8") as f:
-            f.write(re.sub("%s,.*?\n" % book_id, "", text))
-
-    def delete_all(self):
-        print("删除全部")
-        open(self.file_path, "w+").close()
-
-    def query_all(self):
-        books = []
-        with open(self.file_path, "r", encoding="utf-8") as f:
-            for i in f.readlines():
-                i = i.replace("\n", "")
-                books.append(Book(*i.split(",")))
-        return books
-
-    def query(self, book_id):
-        books = self.query_all()
-
-        for i in books:
-            if str(i.book_id) == str(book_id):
-                return i
-
-    def update(self):
-        with open(self.file_path, "r+", encoding="utf-8") as f:
-            text = f.read()
-        with open(self.file_path, "w+", encoding="utf-8") as f:
-            text = re.sub("%s,.*" % self.book_id, self.__str__(), text)
-            f.write(text)
-
-    def find_max_id(self):
-        book_now = None
-        with open(self.file_path, "r", encoding="utf-8") as f:
-            for i in f.readlines():
-                i = i.replace("\n", "")
-                book_now = Book(*i.split(","))
-        return book_now.book_id
+            logging.info("无法更新: 文件中没有 id = %s 的记录" % self.id)
+    def destroy(self):
+        """
+        删
+        1. 如果文件中不存在，则提示
+        2. 如果文件中存在，则删除
+        """
+        if self.is_in_file():
+            #  如果在文件中，删除
+            with open(self.file_path, encoding="utf-8") as f:
+                text = f.read()
+            with open(self.file_path, "w", encoding="utf-8") as f:
+                text = re.sub("%s,.*?\n" % self.id, "", text)
+                f.write(text)
+            logging.info("删除对象:" + self.__str__())
+        else:
+            # 如果不存在，提示
+            logging.info("正在删除不存在对象:" + self.__str__())
 
 
-
-    def print_file(self):
-        with open(self.file_path, "r", encoding="utf-8") as f:
-            print("\n==>文件中的结果（因为原文件有数据，所以条数可能不一致）")
-            for i in f.readlines():
-                print("\t", i, end="")
-
-
-def get_many_books():
-    """从 excel 中拿到数据"""
-    wb = openpyxl.load_workbook(r".\data\book_list-计算机-机器学习-linux-android-数据库-互联网.xlsx")
-    sheets = wb.sheetnames
-    ws = wb[sheets[1]]
-    title = [call.value for call in ws[1]]
-
-    # 读取到对应的行
-    ids = ws["A"][1:]
-    names = ws["B"][1:]
-    marks = ws["C"][1:]
-    mark_peoples = ws["D"][1:]
-    authors = ws["E"][1:]
-    publishers = ws["F"][1:]
-
-    # 提取有效数据
-    ids = [i.value for i in ids]
-    names = ["《%s》" % (i.value,) for i in names]
-    marks = [i.value for i in marks]
-    mark_peoples = [i.value for i in mark_peoples]
-    authors = [i.value.replace("作者/译者：", "") for i in authors]
-    publishers = [i.value.replace("出版信息：", "") for i in publishers]
-
-    # 保存数据
-    books_info = zip(ids, names, marks, mark_peoples, authors, publishers)
-    books = []
-    for i in books_info:
-        i = [str(j).replace(",", "") for j in i]
-        books.append(Book(*i))
-    return books
+    @classmethod
+    def find(cls, id):
+        """
+        查 （根据 id 查询）
+        1. 如果文件中不存在，返回 None
+        2. 如果文件中存在，则 返回对象
+        """
+        # 获取当前类的所有子类
+        sub_cls_list = Book.__all_subcls()
+        attr_v = None  # 寻找的对象的属性
+        for sub_cls in sub_cls_list:  # 每一个 sub_cls 都是一个类，可以直接实例化
+            sub_cls_name = sub_cls.__name__  # 获取类命
+            if not os.path.isfile("%s%s.txt" % (Book.get_file_basepath(), sub_cls_name)):
+                # 如果文件不存在则跳过
+                continue
+            with open("%s%s.txt" % (Book.get_file_basepath(), sub_cls_name), encoding="utf-8") as f:
+                attr_v = re.search("%s,.*" % id, f.read())  # 属性值
+                if attr_v:
+                    attr_v = attr_v.group().split(",")[1:]
+                    # 如果不为空就是找到了
+                    # 找到后，实例化对象
+                    book = sub_cls()
+                    attr_k = list(book.get_all_attr().values())
+                    if len(attr_k) != len(attr_v):
+                        # 如果数量不一致，说明数据已经发生了变动，无法映射
+                        raise RuntimeError("%s 属性以及发生改变，无法映射")
+                    for i in range(len(attr_v)):
+                        setattr(book, attr_k[i], attr_v[i])
+                    logging.info("找到 id = %s 的对象: %s" % (book.id, book.__str__()))
+                    return book
+        logging.info("并没有找到 id = %s 的记录" % id)
+        return None
 
 
+
+
+    def get_all_attr(self):
+        """获取对象所有属性"""
+        all_attr = {}
+        for i in dir(self):
+            if i == "__module__":
+                continue
+            if isinstance(getattr(self, i), str):
+                all_attr[i] = getattr(self, i)
+        return all_attr
+
+    def is_in_file(self):
+        """判断对象是否以及保存在文件中"""
+        return bool(self.find(self.id))
+
+    @classmethod
+    def get_file_basepath(cls):
+        """获取文件保存的 basepath"""
+        # 判断配置文件是否存在
+        if os.path.isfile("./config.ini"):
+            # 在配置文件中读取 basepath
+            config = configparser.ConfigParser()
+            config.read("./config.ini")
+            try:
+                basepath = config.get("file", "basepath")
+            except configparser.NoOptionError:
+                logging.warning("配置文件中不存在 basepath，写入配置文件并返回默认路径")
+                basepath = "./data/"
+                # 写入配置文件
+                config.set("file", "basepath", basepath)
+                with open(r"./config.ini", "w", encoding="utf-8") as f:
+                    config.write(f)
+
+        else:
+            # 不存在配置文件，创建配置文件，并返回默认路径
+            logging.warning("当前路径不存在配置文件，创建默认配置文件，并返回默认路径")
+            with open(r"./config.ini", "w", encoding="utf-8") as f:
+                f.write("[file]\nbasepath = ./data/")
+            basepath = "./data/"
+        return basepath
+
+    def __str__(self, flag=False):
+        """
+        flag = True: 只返回属性；
+        flag = Flase: 类名，所有属性
+        """
+        attr = str(self.id) + "," + ','.join(list(self.get_all_attr().values()))  # 所有属性
+        if flag:
+            return attr
+        else:
+            return self.__class__.__name__ + "," + attr
+    @classmethod
+    def __all_subcls(cls):
+        """获得当前类的所有子类，包括子类的子类"""
+        # 使用递归求
+        def get_all_sub_cls(parent_cls):
+            sub_cls = [parent_cls, ]
+            for i in parent_cls.__subclasses__():
+                sub_cls += get_all_sub_cls(i)
+            return sub_cls
+        return get_all_sub_cls(Book)
+
+
+class CoumputerBook(Book):
+    def __init__(self, name="", star="", author="", public=""):
+        """
+        有关计算机的书
+        :param name: 书名
+        :param star: 评分
+        :param author: 作者
+        :param public: 出版社
+        """
+        super().__init__()
+        self.name = name
+        self.star = star
+        self.author = author
+        self.public = public
+class LinuxBook(CoumputerBook):
+    def __init__(self, name="", star="", author="", public=""):
+        super().__init__(name, star, author, public)
+        self.des = "有关于 Linux 的书籍"
+
+class DatabaseBook(CoumputerBook):
+    def __init__(self, name="", star="", author="", public="", kind=""):
+        super().__init__(name, star, author, public)
+        self.kind = kind
 if __name__ == '__main__':
-    sample_books = get_many_books()
-    # sample_books[0].delete_all()
-    print("====== 1. 从 excel 中随机找到5本书的数据，将他们保存到文件中 =======")
-    random_books = random.sample(sample_books, 5)
-    # random_books = sample_books[:5]
-    for i in random_books:
-        i.save()
-    random_books[0].print_file()  # 展示结果
-    print()
-    print()
-    print()
-
-    print("====== 2. 删除其中前 2 本 =======")
-    for i in random_books[:2]:
-        i.delete()
-    random_books[0].print_file()  # 展示结果
-    print()
-    print()
-    print()
-
-    print("====== 3. 重复插入刚才的 5 本 =======")
-    for i in random_books:
-        i.save()
-    random_books[0].print_file()  # 展示结果
-    print()
-    print()
-    print()
-
-    print("====== 4. 更新 id = %s 的 book =======" % random_books[-1].book_id)
-    book = random_books[-2]
-    print("改前：%s" % book)
-    book.book_name = "《这是一个被改过的 book》"
-    book.book_count_mark_people = 10000000000000000000000000000000000000
-    book.update()
-    print("改后：%s" % book)
-
-    random_books[0].print_file()  # 展示结果
-    print()
-    print()
-    print()
-
-    print("====== 5. 查询 book =======")
-    print("查询已经存在的书籍 id = %s" % random_books[-1].book_id)
-    print(Book().query(random_books[-1].book_id))
-    print("查询没有的数据 id = 1000")
-    print(Book().query(100))
-    print()
-    print()
-    print()
-
-    print("====== 6. 查询 book，并当作对象取值 =======")
-    print("查询已经存在的书籍 id = %s" % random_books[-1].book_id)
-    book = Book().query(random_books[-1].book_id)
-
-    print("book.book_id: ", book.book_id)
-    print("book.book_name: ", book.book_name)
-    print("book.book_mark: ", book.book_mark)
-    print("book.book_count_mark_people: ", book.book_count_mark_people)
-    print("book.book_author: ", book.book_author)
-    print("book.book_publish: ", book.book_publish)
-    print("\n====== Enter 键退出 ======")
-    os.system("pause")
+    linux_book = LinuxBook("UNIX环境高级编程", "9.5", "Stephen A. Rago", "人民邮电出版社")
+    linux_book.save()
+    linux_book.add()
+    linux_book.save()
+    linux_book.destroy()
+    print(Book.find(linux_book.id))
+    print(linux_book.find(linux_book.id))
+    linux_book.add()
+    print(Book.find(linux_book.id))
+    print(linux_book.find(linux_book.id))
