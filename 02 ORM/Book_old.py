@@ -9,9 +9,7 @@ Fix the Problem, Not the Blame.
 import os
 import random
 import re
-
 import openpyxl
-
 
 class Book():
     """
@@ -24,8 +22,19 @@ class Book():
     4. 改：在文件中修改自己的信息，如果没有存在，增加记录
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, book_id=None, book_name=None, book_mark=None, book_count_mark_people=None, book_author=None,
+                 book_publish=None):
+        self.book_id = book_id
+        self.book_name = book_name
+        self.book_mark = book_mark
+        self.book_count_mark_people = book_count_mark_people
+        self.book_author = book_author
+        self.book_publish = book_publish
+
+        self.file_name = self.__class__.__name__  # 根据类命获取文件名
+        self.file_path = os.path.join(".\\data", self.file_name + ".txt")  # 获取路径名
+        if not os.path.exists(self.file_path):
+            open(self.file_path, "w+").close()
 
     def save(self):
         if not self.query(self.book_id):  # 在文件中没有该类的主键时，才可以插入
@@ -83,7 +92,18 @@ class Book():
                 book_now = Book(*i.split(","))
         return book_now.book_id
 
-
+    def __str__(self):
+        # 字符串
+        info = [
+            self.book_id,
+            self.book_name,
+            self.book_mark,
+            self.book_count_mark_people,
+            self.book_author,
+            self.book_publish,
+        ]
+        info = map(str, info)
+        return ','.join(info)
 
     def print_file(self):
         with open(self.file_path, "r", encoding="utf-8") as f:
