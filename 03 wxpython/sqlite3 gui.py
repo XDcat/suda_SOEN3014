@@ -135,9 +135,6 @@ class DatabaseTreePanel(wx.Panel):
     def add_database(self, path, fn_click_table=None):
         """在 tree 中添加数据库数据"""
         db_file_name = os.path.split(path)[-1][:-3]
-        # 添加 tree: 数据库文件
-        db_file_item = self.tree.AppendItem(self.root, db_file_name)
-        self.tree.SetItemImage(db_file_item, 1)
 
         # 连接数据库
         try:
@@ -145,6 +142,10 @@ class DatabaseTreePanel(wx.Panel):
             c = conn.cursor()  # 创建游标对象
             # 数据表
             dbs = c.execute("select name from sqlite_master where type='table';").fetchall()
+
+            # 添加 tree: 数据库文件
+            db_file_item = self.tree.AppendItem(self.root, db_file_name)
+            self.tree.SetItemImage(db_file_item, 1)
             for db in dbs:
                 # 每一个数据表
                 table_name = db[0]
@@ -161,9 +162,14 @@ class DatabaseTreePanel(wx.Panel):
                     # 添加 tree: 字段
                     col_item = self.tree.AppendItem(table_item, col_name)
                     self.tree.SetItemImage(col_item, 4)
-
         except Exception as e:
-            print(e)
+            dlg = wx.MessageDialog(self, str(e),
+                                    "打开文件时出错",
+                                   wx.OK | wx.ICON_INFORMATION
+                                   # wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION
+                                   )
+            dlg.ShowModal()
+            dlg.Destroy()
 
     def get_db_path_by_name(self, db_name):
         return self.db_dict[db_name]
