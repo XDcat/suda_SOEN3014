@@ -173,7 +173,7 @@ class Book():
         return get_all_sub_cls(Book)
 
 
-class CoumputerBook(Book):
+class ComputerBook(Book):
     def __init__(self, name="", star="", author="", public=""):
         """
         有关计算机的书
@@ -187,23 +187,32 @@ class CoumputerBook(Book):
         self.star = star
         self.author = author
         self.public = public
-class LinuxBook(CoumputerBook):
+class LinuxBook(ComputerBook):
     def __init__(self, name="", star="", author="", public=""):
         super().__init__(name, star, author, public)
         self.des = "有关于 Linux 的书籍"
 
-class DatabaseBook(CoumputerBook):
+class DatabaseBook(ComputerBook):
     def __init__(self, name="", star="", author="", public="", kind=""):
         super().__init__(name, star, author, public)
         self.kind = kind
 if __name__ == '__main__':
     linux_book = LinuxBook("UNIX环境高级编程", "9.5", "Stephen A. Rago", "人民邮电出版社")
+    logging.debug("创建 LinuxBook 对象：%s" % linux_book)
+    logging.debug("没有插入，更新对象")
     linux_book.save()
+    logging.debug("没有插入，插入对象")
     linux_book.add()
+    logging.debug("插入后，更新对象")
     linux_book.save()
+    logging.debug("插入后，删除对象")
     linux_book.destroy()
-    print(Book.find(linux_book.id))
-    print(linux_book.find(linux_book.id))
+    logging.debug("没有插入，使用类查找对象")
+    logging.debug(Book.find(linux_book.id))
+    logging.debug("没有插入，使用对象查找对象")
+    logging.debug(linux_book.find(linux_book.id))
     linux_book.add()
-    print(Book.find(linux_book.id))
-    print(linux_book.find(linux_book.id))
+    logging.debug("插入后，使用类查找对象")
+    logging.debug(Book.find(linux_book.id))
+    logging.debug("插入后，使用对象查找对象")
+    logging.debug(linux_book.find(linux_book.id))
