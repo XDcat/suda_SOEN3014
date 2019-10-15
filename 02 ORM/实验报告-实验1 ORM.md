@@ -29,7 +29,7 @@ ORM，即对象关系映射（Object-Relational Mapping）,将面向对象语言
 | Read     | 类方法      | find    | 查（根据id查询）   1.如果文件中不存在，返回None   2.如果文件中存在，则返回对象 |
 | Delete   | 对象方法    | destory | 删   1.如果文件中不存在，则提示   2.如果文件中存在，则删除   |
 
-![1570844736338](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\1570844736338.png)
+![1570844736338](assets/1570844736338.png)
 
 举例
 
