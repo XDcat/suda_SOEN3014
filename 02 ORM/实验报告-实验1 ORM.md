@@ -83,7 +83,7 @@ ORM，即对象关系映射（Object-Relational Mapping）,将面向对象语言
 
 结果
 
-![1570848832014](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\1570848832014.png)
+![1571131066443](assets/1571131066443.png)
 
 ## 归纳总结
 

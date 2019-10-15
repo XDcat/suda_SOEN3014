@@ -21,7 +21,7 @@ class Book():
 
     def __init__(self):
         # 设置日志对象
-        self.id = uuid.uuid1()  # 生成唯一表示符
+        self.id = None # 主键：1. 在插入时递增最大值 2. 查询时赋值
         self.file_basepath = self.get_file_basepath()  # 文件保存的目录
         self.file_path = "%s%s.txt" % (self.get_file_basepath(), self.__class__.__name__)
         if not os.path.isfile(self.file_path):
@@ -36,6 +36,16 @@ class Book():
             logging.info("插入对象失败：文件中已经存在此对象")
             return
 
+        # 查询 id 的最大值
+        max_id = 0
+        with open(self.file_path, encoding="utf-8") as f:
+            lines = f.readlines()
+            # 只有在文件中有数据时，查询
+            if lines:
+                last_line = lines[-1]
+                max_id = int(last_line.split(",")[0])
+
+        self.id = max_id + 1  # 为 id 赋值
         with open(self.file_path, "a", encoding="utf-8") as f:
             f.write(self.__str__(True) + '\n')
         logging.info("插入对象:%s" % self.__str__())
@@ -82,6 +92,9 @@ class Book():
         1. 如果文件中不存在，返回 None
         2. 如果文件中存在，则 返回对象
         """
+        # 如果 id 还没有赋值，可以直接判断不存在
+        if id == None:
+            return None
         # 获取当前类的所有子类
         sub_cls_list = Book.__all_subcls()
         attr_v = None  # 寻找的对象的属性
@@ -97,13 +110,13 @@ class Book():
                     # 如果不为空就是找到了
                     # 找到后，实例化对象
                     book = sub_cls()
-                    attr_k = list(book.get_all_attr().values())
+                    attr_k = list(book.get_all_attr().keys())
                     if len(attr_k) != len(attr_v):
                         # 如果数量不一致，说明数据已经发生了变动，无法映射
                         raise RuntimeError("%s 属性以及发生改变，无法映射")
                     for i in range(len(attr_v)):
                         setattr(book, attr_k[i], attr_v[i])
-                    logging.info("找到 id = %s 的对象: %s" % (book.id, book.__str__()))
+                    logging.info("找到 id = %s 的对象: %s" % (id, book.__str__()))
                     return book
         logging.info("并没有找到 id = %s 的记录" % id)
         return None
@@ -115,10 +128,24 @@ class Book():
         """获取对象所有属性"""
         all_attr = {}
         for i in dir(self):
-            if i == "__module__":
+            # 排除一些魔术方法
+            if i in ["__module__", "id"]:
                 continue
-            if isinstance(getattr(self, i), str):
-                all_attr[i] = getattr(self, i)
+
+            # 排除配置文件中要求的不需要的属性
+            if os.path.isfile("./config.ini"):
+                config = configparser.ConfigParser()
+                config.read("./config.ini")
+                try:
+                    ignore_attr = config.get("file", "ignore")
+                    if i in ignore_attr.split(","):
+                        continue
+                except configparser.NoOptionError:
+                    logging.info("配置文件中并不存在 file.ignore")
+
+            # 添加属性
+            if isinstance(getattr(self, i), (int, float, str, )):
+                all_attr[i] = str(getattr(self, i))
         return all_attr
 
     def is_in_file(self):
@@ -211,8 +238,8 @@ if __name__ == '__main__':
     logging.debug(Book.find(linux_book.id))
     logging.debug("没有插入，使用对象查找对象")
     logging.debug(linux_book.find(linux_book.id))
-    linux_book.add()
     logging.debug("插入后，使用类查找对象")
+    linux_book.add()
     logging.debug(Book.find(linux_book.id))
     logging.debug("插入后，使用对象查找对象")
     logging.debug(linux_book.find(linux_book.id))
